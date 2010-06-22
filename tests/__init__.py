@@ -258,5 +258,57 @@ class TestLineClosing(unittest.TestCase):
 		l = self.lines[1]
 		self.assertRaises(NotImplementedError, l.close_line, None, "s1")
 
+class MyParser(trainlib.Parser):
+	def fixup_station_name(self, name):
+		m = {
+			'1st': 'First Station',
+			'2nd': 'Second Station'
+		}
+		if m.has_key(name):
+			return m[name]
+		else:
+			return name
+		
+	def fixup_line_name(self, name):
+		m = {
+			'1st': 'First Line',
+			'2nd': 'Second Line'
+		}
+		if m.has_key(name):
+			return m[name]
+		else:
+			return name
+
+class TestNameFixups(unittest.TestCase):
+	def __init__(self, *kwargs, **args):
+		thisdir = os.path.realpath(os.path.dirname(__file__))
+		p = MyParser()
+		self.lines = p.parse_lines(os.path.join(thisdir, 'data', 'test_naming.json'))
+		super(TestNameFixups, self).__init__(*kwargs, **args)
+
+	def test_name_fixup_0(self):
+		l = self.lines[0]
+		self.assertEqual(l.name, u"First Line")
+		self.assertEqual(l.stations[0].name, u"First Station")
+		self.assertEqual(l.stations[1].name, u"Second Station")
+		self.assertEqual(l.stations[2].name, u"Third Station")
+		self.assertEqual(len(l.stations), 3)
+
+	def test_name_fixup_1(self):
+		l = self.lines[1]
+		self.assertEqual(l.name, u"Second Line")
+		self.assertEqual(l.stations[0].name, u"First Station")
+		self.assertEqual(l.stations[1].name, u"2ndd")
+		self.assertEqual(l.stations[2].name, u"3rd")
+		self.assertEqual(len(l.stations), 3)
+
+	def test_name_fixup_2(self):
+		l = self.lines[2]
+		self.assertEqual(l.name, u"3rd")
+		self.assertEqual(l.stations[0].name, u"First Station")
+		self.assertEqual(l.stations[1].name, u"2ndd")
+		self.assertEqual(l.stations[2].name, u"3rd")
+		self.assertEqual(len(l.stations), 3)
+
 if __name__ == "__main__":
 	unittest.main()

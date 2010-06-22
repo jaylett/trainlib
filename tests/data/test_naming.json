@@ -1,0 +1,31 @@
+[
+	{
+		"name": "1st",
+		"stations":
+		[
+			"1st",
+			"2nd",
+			"Third Station"
+		]
+	},
+
+	{
+		"name": "2nd",
+		"stations":
+		[
+			"1st",
+			"2ndd",
+			"3rd"
+		]
+	},
+
+	{
+		"name": "3rd",
+		"stations":
+		[
+			"1st",
+			"2ndd",
+			"3rd"
+		]
+	}
+]

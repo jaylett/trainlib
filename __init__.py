@@ -144,13 +144,16 @@ class Parser:
 			return 'station'
 
 	def fixup_station_name(self, name):
-		return unicode(name)
+		return name
+		
+	def fixup_line_name(self, name):
+		return name
 
 	def parse_lines_from_file(self, file):
 		l = json.load(file)
 		out = []
 		for line in l:
-			lname = line.get('name', 'Unnamed line')
+			lname = self.fixup_line_name(line.get('name', 'Unnamed line'))
 			stations = {}
 			termini = []
 			# first pass: get stations
