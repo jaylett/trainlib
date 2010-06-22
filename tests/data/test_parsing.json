@@ -1,0 +1,62 @@
+[
+	{
+		"name": "Test line 1",
+		"stations":
+		[
+			{ "name": "Station 1", "next": ["Station 2"], "type": "station" },
+			{ "name": "Station 2", "next": ["Depot 1"], "type": "station" },
+			{ "name": "Depot 1", "next": [], "type": "depot" }
+		]
+	},
+	
+	{
+		"name": "Test line 2",
+		"stations":
+		[
+			{ "name": "Station 1" },
+			{ "name": "Station 2" },
+			{ "name": "Depot 1" }
+		]
+	},
+	
+	{
+		"name": "Test line 3",
+		"stations":
+		[
+			"Station 1",
+			"Station 2",
+			"Depot 1"
+		]
+	},
+	
+	{
+		"name": "Reduced next test",
+		"stations":
+		[
+			{ "name": "1", "next": ["2"], "type": "station" },
+			{ "name": "2", "type": "depot" }
+		]
+	},
+	
+	{
+		"name": "Termini test",
+		"stations":
+		[
+			{ "name": "terminus 1", "next": "station 1" },
+			"depot 1",
+			"station 1",
+			"terminus 2"
+		]
+	},
+	
+	{
+		"name": "links test",
+		"stations":
+		[
+			{ "name": "t1", "next": ["s1", "s2"] },
+			{ "name": "s1", "next": "t2" },
+			"s2",
+			"t2"
+		]
+	}
+]

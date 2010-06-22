@@ -1,0 +1,26 @@
+[
+	{
+		"name": "closing 0",
+		"stations":
+		[
+			{ "name": "t1", "next": ["s1", "s2"] },
+			{ "name": "s1", "next": "t2" },
+			"s2",
+			"t2"
+		]
+	},
+
+	{
+		"name": "closing 1",
+		"stations":
+		[
+			{ "name": "t1", "next": ["s1", "s2"] },
+			{ "name": "s1", "next": "s3" },
+			"s2",
+			{ "name": "s3", "next": ["t2", "s4"] },
+			{ "name": "t2", "next": null },
+			"s4",
+			"t3"
+		]
+	}
+]
