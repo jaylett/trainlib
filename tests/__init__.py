@@ -7,10 +7,10 @@ import os.path
 import trainlib
 
 class TestLinesFileParsing(unittest.TestCase):
-	def __init__(self, *kwargs, **args):
+	def __init__(self, *args, **kwargs):
 		thisdir = os.path.realpath(os.path.dirname(__file__))
 		self.lines = trainlib.parse_lines(os.path.join(thisdir, 'data', 'test_parsing.json'))
-		super(TestLinesFileParsing, self).__init__(*kwargs, **args)
+		super(TestLinesFileParsing, self).__init__(*args, **kwargs)
 
 	def check_simple_station_set(self, stations):
 		self.assertEqual(len(stations), 3)
@@ -95,10 +95,10 @@ class TestLinesFileParsing(unittest.TestCase):
 		self.assertEqual(len(s4.all_previous), 3)
 
 class TestLineClosing(unittest.TestCase):
-	def __init__(self, *kwargs, **args):
+	def __init__(self, *args, **kwargs):
 		thisdir = os.path.realpath(os.path.dirname(__file__))
 		self.lines = trainlib.parse_lines(os.path.join(thisdir, 'data', 'test_closing.json'))
-		super(TestLineClosing, self).__init__(*kwargs, **args)
+		super(TestLineClosing, self).__init__(*args, **kwargs)
 		
 	def setUp(self):
 		self.close_station = trainlib.Station.close_station
@@ -280,11 +280,11 @@ class MyParser(trainlib.Parser):
 			return name
 
 class TestNameFixups(unittest.TestCase):
-	def __init__(self, *kwargs, **args):
+	def __init__(self, *args, **kwargs):
 		thisdir = os.path.realpath(os.path.dirname(__file__))
 		p = MyParser()
 		self.lines = p.parse_lines(os.path.join(thisdir, 'data', 'test_naming.json'))
-		super(TestNameFixups, self).__init__(*kwargs, **args)
+		super(TestNameFixups, self).__init__(*args, **kwargs)
 
 	def test_name_fixup_0(self):
 		l = self.lines[0]
@@ -309,6 +309,33 @@ class TestNameFixups(unittest.TestCase):
 		self.assertEqual(l.stations[1].name, u"2ndd")
 		self.assertEqual(l.stations[2].name, u"3rd")
 		self.assertEqual(len(l.stations), 3)
+
+class TestExtraData(unittest.TestCase):
+	def __init__(self, *args, **kwargs):
+		thisdir = os.path.realpath(os.path.dirname(__file__))
+		self.lines = trainlib.parse_lines(os.path.join(thisdir, 'data', 'test_extra_data.json'))
+		super(TestExtraData, self).__init__(*args, **kwargs)
+
+	def test_extra_data_0(self):
+		l = self.lines[0]
+		self.assertEqual(l.name, u"l1")
+		s = l.stations[0]
+		self.assertEqual(s.name, u"s1")
+		self.assertEqual(len(s.geo), 2)
+		self.assertEqual(s.geo[0], 0.0)
+		self.assertEqual(s.geo[1], 1.0)
+		self.assertEqual(len(l.stations), 1)
+
+	def test_extra_data_1(self):
+		l = self.lines[1]
+		self.assertEqual(l.name, u"l2")
+		self.assertEqual(l.colour, u"#00ff00")
+		s = l.stations[0]
+		self.assertEqual(s.name, u"s1")
+		self.assertEqual(len(s.geo), 2)
+		self.assertEqual(s.geo[0], 0.0)
+		self.assertEqual(s.geo[1], 1.0)
+		self.assertEqual(len(l.stations), 1)
 
 if __name__ == "__main__":
 	unittest.main()

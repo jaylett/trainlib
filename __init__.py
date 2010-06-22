@@ -6,7 +6,7 @@ import json
 UNNAMED_STATION = 'Unnamed station'
 
 class Line:
-	def __init__(self, name, stations, termini = None):
+	def __init__(self, name, stations, termini = None, **kwargs):
 		self.name = name
 		self.stations = stations
 		if termini==None:
@@ -15,6 +15,16 @@ class Line:
 			self.termini = termini
 		for s in self.stations:
 			s._update_links()
+		self.__dict__.update(kwargs)
+		
+	def __getattr__(self, name):
+		try:
+			return self.__dict__[name]
+		except KeyError:
+			raise AttributeError(u"Line object '%s' has no attribute '%s'" % (unicode(self), name))
+		
+	def __setattr__(self, name, value):
+		self.__dict__[name] = value
 	
 	def resolve_station(self, name):
 		for s in self.stations:
@@ -63,7 +73,7 @@ class Line:
 		return self.name
 
 class Station:
-	def __init__(self, name, type, next=None, previous=None):
+	def __init__(self, name, type, next=None, previous=None, **kwargs):
 		self.name = name
 		self.type = type
 		if next==None:
@@ -77,6 +87,16 @@ class Station:
 		self.status = 'open'
 		self.all_next = []
 		self.all_previous = []
+		self.__dict__.update(kwargs)
+		
+	def __getattr__(self, name):
+		try:
+			return self.__dict__[name]
+		except KeyError:
+			raise AttributeError(u"Station object '%s' has no attribute '%s'" % (unicode(self), name))
+		
+	def __setattr__(self, name, value):
+		self.__dict__[name] = value
 		
 	def close_station(self):
 		self.status = 'closed'
@@ -165,9 +185,16 @@ class Parser:
 				else:
 					st['name'] = self.fixup_station_name(st.get('name', UNNAMED_STATION))
 				slist[idx] = st
+				stx = {}
+				for k in st.keys():
+					if k not in ('name', 'next', 'type', 'previous', 'loop'):
+						k = str(k)
+						stx[k] = st[k]
 				s = Station(
 					st['name'],
-					st.get('type', self.ponder_type_from_name(st.get('name', '')))
+					st.get('type', self.ponder_type_from_name(st.get('name', ''))),
+					None,
+					**stx
 					)
 				next = st.get('next')
 				if stations.get(s.name, None)!=None:
@@ -219,7 +246,13 @@ class Parser:
 			for s in slist:
 				st = stations[s.get('name', UNNAMED_STATION)]
 				sts.append(st)
-			out.append(Line(lname, sts, termini))
+
+			stx = {}
+			for k in line.keys():
+				if k not in ('name', 'stations'):
+					k = str(k)
+					stx[k] = line[k]
+			out.append(Line(lname, sts, termini, **stx))
 		return out
 
 def parse_lines(file_or_filename):
